@@ -37,7 +37,7 @@ export default function Products() {
                     pageSize: 10,
                 });
             } catch (error) {
-                console.error("Error fetching products:", error);
+                toast.error("erro ao carregar produtos")
             }
         };
 
@@ -92,7 +92,7 @@ export default function Products() {
                         cover={
                             <Image
                                 alt={produto.nome || "Produto"}
-                                src={produto.foto ? produto.foto : "/image/220.svg"}
+                                src={produto.photo && produto.photo.startsWith("http") ? produto.photo : `http://localhost:3030/uploads/${produto.photo}`}
                                 width={220}
                                 height={220}
                             />
@@ -109,22 +109,22 @@ export default function Products() {
             <Modal
                 open={modalInfo.visible}
                 onCancel={() => setModalInfo({ ...modalInfo, visible: false })}
-                footer={null}
+                onOk={() => setModalInfo({ ...modalInfo, visible: false })}
             >
 
-                
-
-
-                {modalInfo.produto ? (
-                    <div className={styles.modalContent}>
+            {modalInfo.loading ? (
+                <Skeleton active />
+            ) : (
+                modalInfo.produto && (
+                    
+                        <div className={styles.modalContent}>
                         <h2>{modalInfo.produto.name}</h2>
-                        <p>{modalInfo.produto.validade}</p>
-                        <p>{modalInfo.produto.fornecedor_name}</p>
+                        <p>Validade: {modalInfo.produto.validade}</p>
                     </div>
                     
-                ) : (
-                    <Skeleton active /> 
-                )}
+                )
+            )}
+
             </Modal>
             <ToastContainer />
         </div>
